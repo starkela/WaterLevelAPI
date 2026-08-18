@@ -1,12 +1,42 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<body>
+<div>
+  <canvas id="myChart" data-waterlevel = "{{waterlevel | tojson}}",
+   data-measured = "{{measured | tojson}}"></canvas>
+</div>
 
-    <h1>History of water level</h1>
-    <p>
-    {% for levels in water_level %}
-    {{levels}}
-    {% endfor %}
-    </p>    
-    <a href="{{ url_for('show') }}">Current water level</a>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
+
+
+<script>
+const canvas = document.getElementById("myChart");
+const yValues = JSON.parse(canvas.dataset.waterlevel);
+const xValues = JSON.parse(canvas.dataset.measured);
+new Chart( canvas, {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor:"rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'time', // Configures Chart.js to handle ISO timestamp strings
+        time: {
+          tooltipFormat: 'yyyy-MM-dd HH:mm:ss'
+        },
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      }
+    }
+  }
+});
+</script>
