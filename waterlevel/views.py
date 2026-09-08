@@ -1,7 +1,7 @@
 from flask import (
     Blueprint, render_template, request
 )
-from WaterLevel.db import get_db
+from waterlevel.db import get_db
 
 bp = Blueprint("views", __name__)
 
