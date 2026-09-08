@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} · Füllstand</title>
+
+  {# Swap themes by changing this default, or pass theme="style-pegel" etc.
+     from a view with render_template(..., theme="style-woge"). #}
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename=(theme | default('style')) ~ '.css') }}">
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <nav>
+    <h1><a href="{{ url_for('views.show') }}">Füllstand</a></h1>
+    <ul>
+      <li>
+        <a href="{{ url_for('views.show') }}"
+           {% if request.endpoint == 'show' %}class="active"{% endif %}>Aktuell</a>
+      </li>
+      <li>
+        <a href="{{ url_for('views.history') }}"
+           {% if request.endpoint == 'history' %}class="active"{% endif %}>Verlauf</a>
+      </li>
+    </ul>
+  </nav>
+
+  <section class="content">
+    {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </section>
+
+</body>
+</html>

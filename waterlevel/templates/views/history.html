@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Zeitlicher Verlauf{% endblock %}
+
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="chart-card">
+    <h1>Wasserstand im zeitlichen Verlauf</h1>
+    <div class="chart-container">
+      <canvas id="waterlevel-chart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // --- Data injected by Flask via Jinja2 -----------------------------
+    // In your Flask view:
+    //   return render_template(
+    //       "history.html",
+    //       measured=measured,      // list of SQLite ISO8601 timestamp strings
+    //       waterlevel=waterlevel,  // list of numeric water level readings
+    //   )
+    const measured   = {{ measured | tojson }};
+    const waterlevel = {{ waterlevel | tojson }};
+
+    // SQLite's ISO8601 default is "YYYY-MM-DD HH:MM:SS" (space instead of
+    // "T"). Normalize so the JS Date parser treats it as ISO reliably.
+    function toIsoT(ts) {
+      return ts.includes("T") ? ts : ts.replace(" ", "T");
+    }
+
+    const points = measured.map((ts, i) => ({
+      x: toIsoT(ts),
+      y: waterlevel[i],
+    }));
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    const accent     = rootStyles.getPropertyValue("--accent").trim() || "#2b6cb0";
+    const accentSoft = rootStyles.getPropertyValue("--accent-soft").trim() || "rgba(43, 108, 176, 0.15)";
+
+    const ctx = document.getElementById("waterlevel-chart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        datasets: [
+          {
+            label: "Wasserstand",
+            data: points,
+            borderColor: accent,
+            backgroundColor: accentSoft,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+            borderWidth: 2,
+            tension: 0.25,
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "nearest", axis: "x", intersect: false },
+        scales: {
+          x: {
+            type: "time",
+            time: {
+              tooltipFormat: "yyyy-MM-dd HH:mm:ss",
+              displayFormats: { minute: "HH:mm", hour: "MMM d HH:mm", day: "MMM d" },
+            },
+            title: { display: true, text: "Zeit" },
+          },
+          y: {
+            title: { display: true, text: "Wasserstand" },
+            beginAtZero: false,
+          },
+        },
+        plugins: {
+          legend: { display: true },
+          tooltip: {
+            callbacks: { label: (item) => `Stand: ${item.parsed.y}` },
+          },
+        },
+      },
+    });
+  </script>
+{% endblock %}

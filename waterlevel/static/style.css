@@ -1,0 +1,85 @@
+/* Theme: Nacht (night) — dark mode, easy on the eyes for checking
+   the tank level after dark. */
+
+:root {
+  --bg: #0f1720;
+  --surface: #17212c;
+  --text: #dbe4ee;
+  --text-muted: #7e8ea3;
+  --accent: #4fa3e3;
+  --accent-soft: rgba(79, 163, 227, 0.18);
+  --border: #26313d;
+  --nav-bg: #131b24;
+  --danger: #e2726b;
+  --font-heading: Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html { font-family: var(--font-body); background: var(--bg); padding: 1rem; color: var(--text); }
+body { max-width: 960px; margin: 0 auto; background: var(--surface); border-radius: 10px; overflow: hidden; }
+
+h1 { font-family: var(--font-heading); color: var(--accent); margin: 1rem 0; }
+a { color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); }
+
+nav { background: var(--nav-bg); display: flex; align-items: center; padding: 0 0.5rem; }
+nav h1 { flex: auto; margin: 0; font-family: var(--font-body); }
+nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; color: var(--text); }
+nav ul { display: flex; list-style: none; margin: 0; padding: 0; }
+nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; color: var(--text-muted); text-decoration: none; }
+nav ul li a.active { color: var(--accent); font-weight: 600; }
+
+.content { padding: 0 1rem 1rem; }
+.content > header { border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; }
+.content > header h1 { flex: auto; margin: 1rem 0 0.25rem 0; }
+.flash { margin: 1em 0; padding: 1em; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 6px; }
+
+.post > header { display: flex; align-items: flex-end; font-size: 0.85em; }
+.post > header > div:first-of-type { flex: auto; }
+.post > header h1 { font-size: 1.5em; margin-bottom: 0; }
+.post .about { color: var(--text-muted); font-style: italic; }
+.post .body { white-space: pre-line; }
+.content:last-child { margin-bottom: 0; }
+
+.content form { margin: 1em 0; display: flex; flex-direction: column; }
+.content label { font-weight: bold; margin-bottom: 0.5em; }
+.content input, .content textarea {
+  margin-bottom: 1em; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  border-radius: 6px; padding: 0.5em; font: inherit;
+}
+.content textarea { min-height: 12em; resize: vertical; }
+input.danger { color: var(--danger); }
+input[type=submit] {
+  align-self: start; min-width: 10em; background: var(--accent); color: #0f1720;
+  border: none; border-radius: 6px; padding: 0.6em 1em; cursor: pointer; font-weight: 600;
+}
+input[type=submit]:hover { opacity: 0.9; }
+
+footer { padding: 1rem; text-align: center; border-top: 1px solid var(--border); }
+
+/* --- Füllstand gauge (show.html) ------------------------------------ */
+.outline {
+  position: relative; width: 200px; height: 300px; margin: 2rem auto;
+  border: 2px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg);
+}
+.filling {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  height: calc(var(--percentage) * 300px);
+  background: var(--accent);
+  box-shadow: 0 0 16px var(--accent-soft);
+  transition: height 0.4s ease;
+}
+.tooltip {
+  position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.15s ease;
+  background: #05090d; color: var(--text); font-size: 0.8rem; border: 1px solid var(--border);
+  padding: 0.25em 0.5em; border-radius: 4px; white-space: nowrap; z-index: 2;
+}
+.info { text-align: center; font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+
+/* --- Chart (history.html) -------------------------------------------- */
+.chart-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem;
+  max-width: 1000px; margin: 1rem auto;
+}
+.chart-container { position: relative; width: 100%; height: 400px; }
+.chart-container canvas { width: 100% !important; height: 100% !important; }

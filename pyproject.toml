@@ -1,0 +1,12 @@
+[project]
+name = "WaterLevel"
+version = "1.0.0"
+description = "Basic sensordata display and storage."
+dependencies = [
+    "flask",
+]
+
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
