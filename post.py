@@ -1,15 +1,10 @@
 import requests
-from time import sleep
-headers =  {'Content-Type': 'application/json; charset=utf-8'}
-url = "http://localhost:5000/add"
+from random import randrange
 
-for i in range(9):
-    sleep(5)
-    data = {"waterlevel" : 300 * i}
-    response = requests.post(url, json=data , headers=headers )
+url = "http://10.17.168.82:5000/add"
+headers = {'Content-Type': 'application/json'}
 
-
-if response.status_code == 200:
-    print(data)
-else:
-    print("invalid")
+# Reuses the underlying TCP connection
+with requests.Session() as session:
+        data = {"waterlevel": randrange(3000)}
+        response = session.post(url, json=data, headers=headers)

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Aktueller Füllstand{% endblock %}
+
+{% block content %}
+  <h1>Füllstand</h1>
+
+  <div class="outline" id="outline"
+       data-liters="{{ waterlevel | default(0) }}"
+       data-capacity="{{ capacity | default(3000) }}">
+    <div class="filling" style="--percentage: {{ percentage }};" id="filling"></div>
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <div class="info">
+    <p>{{ (percentage * 100) | round(1) }} %</p>
+  </div>
+{% endblock %}
+
+{% block head %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const outline  = document.getElementById("outline");
+      const tooltip  = document.getElementById("tooltip");
+      const liters   = outline.dataset.liters;
+      const capacity = outline.dataset.capacity;
+
+      const label = capacity && Number(capacity) > 0
+        ? `${liters} L von ${capacity} L`
+        : `${liters} L`;
+
+      outline.addEventListener("mousemove", (e) => {
+        const rect = outline.getBoundingClientRect();
+        tooltip.style.left = (e.clientX - rect.left + 12) + "px";
+        tooltip.style.top  = (e.clientY - rect.top - 24) + "px";
+        tooltip.textContent = label;
+        tooltip.style.opacity = 1;
+      });
+
+      outline.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = 0;
+      });
+    });
+  </script>
+{% endblock %}
